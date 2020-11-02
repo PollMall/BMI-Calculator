@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Redirect, Route } from "react-router-dom";
-import { IonApp, IonHeader, IonContent, IonToolbar, IonTitle, IonRow, IonInput, IonGrid, IonCol, IonItem, IonLabel, IonButton, IonIcon } from "@ionic/react";
+import { IonApp, IonHeader, IonContent, IonToolbar, IonTitle, IonRow, IonInput, IonGrid, IonCol, IonItem, IonLabel, IonButton, IonIcon, IonCard, IonCardContent } from "@ionic/react";
 import {calculatorOutline,refreshOutline} from "ionicons/icons"
 import { IonReactRouter } from "@ionic/react-router";
 import Home from "./pages/Home";
@@ -25,53 +25,85 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 
-const App: React.FC = () => (
-	<IonApp>
-		<IonHeader>
-			<IonToolbar>
-				<IonTitle>BMI Calculator</IonTitle>
-			</IonToolbar>
-		</IonHeader>
-		<IonContent className="ion-padding">
-			<IonGrid>
-				<IonRow>
-					<IonCol>
-						<IonItem>
-							<IonLabel position="floating">Your Height</IonLabel>
-							<IonInput></IonInput>
-						</IonItem>
-					</IonCol>
-				</IonRow>
-				<IonRow>
-					<IonCol>
-						<IonItem>
-							<IonLabel position="floating">Your Weight</IonLabel>
-							<IonInput></IonInput>
-						</IonItem>
-					</IonCol>
-				</IonRow>
-				<IonRow>
-					<IonCol className="ion-text-left">
-						<IonButton>
-							<IonIcon slot="start" icon={calculatorOutline}/>
-							Calculate
-						</IonButton>
-					</IonCol>
-					<IonCol className="ion-text-right">
-						<IonButton>
-							<IonIcon slot="start" icon={refreshOutline}/>
-							Reset
-						</IonButton>
-					</IonCol>
-				</IonRow>
-				<IonRow>
-					<IonCol>
+const App: React.FC = () => {
+	const [calculatedBmi, setBmiValue] = useState<number>();
+	const heightInputRef = useRef<HTMLIonInputElement>(null);
+	const weightInputRef = useRef<HTMLIonInputElement>(null);
 
-					</IonCol>
-				</IonRow>
-			</IonGrid>
-		</IonContent>
-	</IonApp>
-);
+	const calculateBMI = () => {
+		const heightValue = heightInputRef.current!.value;
+		const weightValue = weightInputRef.current!.value;
+
+		if(!heightValue || !weightValue){
+			setBmiValue(undefined);
+			return;
+		}
+
+		const bmiValue = +weightValue / (+heightValue * +heightValue);
+		if(isNaN(bmiValue)){
+			alert("Height and weight must be numbers!");
+		} else {
+			setBmiValue(bmiValue);
+		}
+	};
+	const resetInputs = () => {
+		heightInputRef.current!.value = '';
+		weightInputRef.current!.value = '';
+		setBmiValue(undefined);
+	};
+
+	return (
+		<IonApp>
+			<IonHeader>
+				<IonToolbar>
+					<IonTitle>BMI Calculator</IonTitle>
+				</IonToolbar>
+			</IonHeader>
+			<IonContent className="ion-padding">
+				<IonGrid>
+					<IonRow>
+						<IonCol>
+							<IonItem>
+								<IonLabel position="floating">Your Height</IonLabel>
+								<IonInput ref={heightInputRef}></IonInput>
+							</IonItem>
+						</IonCol>
+					</IonRow>
+					<IonRow>
+						<IonCol>
+							<IonItem>
+								<IonLabel position="floating">Your Weight</IonLabel>
+								<IonInput ref={weightInputRef}></IonInput>
+							</IonItem>
+						</IonCol>
+					</IonRow>
+					<IonRow>
+						<IonCol className="ion-text-left">
+							<IonButton onClick={calculateBMI}>
+								<IonIcon slot="start" icon={calculatorOutline} />
+								Calculate
+							</IonButton>
+						</IonCol>
+						<IonCol className="ion-text-right">
+							<IonButton onClick={resetInputs}>
+								<IonIcon slot="start" icon={refreshOutline} />
+								Reset
+							</IonButton>
+						</IonCol>
+					</IonRow>
+					{calculatedBmi && (<IonRow>
+						<IonCol>
+							<IonCard>
+								<IonCardContent>
+									<h2>{calculatedBmi}</h2>
+								</IonCardContent>
+							</IonCard>
+						</IonCol>
+					</IonRow>)}
+				</IonGrid>
+			</IonContent>
+		</IonApp>
+	);
+};
 
 export default App;
