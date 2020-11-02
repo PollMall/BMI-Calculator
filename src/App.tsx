@@ -1,8 +1,10 @@
 import React from "react";
 import { Redirect, Route } from "react-router-dom";
-import { IonApp, IonRouterOutlet } from "@ionic/react";
+import { IonApp, IonHeader, IonContent, IonToolbar, IonTitle, IonRow, IonInput, IonGrid, IonCol, IonItem, IonLabel, IonButton, IonIcon } from "@ionic/react";
+import {calculatorOutline,refreshOutline} from "ionicons/icons"
 import { IonReactRouter } from "@ionic/react-router";
 import Home from "./pages/Home";
+
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -24,9 +26,52 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 
 const App: React.FC = () => (
-  <IonApp>
-    <h2>Hello world!</h2>
-  </IonApp>
+	<IonApp>
+		<IonHeader>
+			<IonToolbar>
+				<IonTitle>BMI Calculator</IonTitle>
+			</IonToolbar>
+		</IonHeader>
+		<IonContent className="ion-padding">
+			<IonGrid>
+				<IonRow>
+					<IonCol>
+						<IonItem>
+							<IonLabel position="floating">Your Height</IonLabel>
+							<IonInput></IonInput>
+						</IonItem>
+					</IonCol>
+				</IonRow>
+				<IonRow>
+					<IonCol>
+						<IonItem>
+							<IonLabel position="floating">Your Weight</IonLabel>
+							<IonInput></IonInput>
+						</IonItem>
+					</IonCol>
+				</IonRow>
+				<IonRow>
+					<IonCol className="ion-text-left">
+						<IonButton>
+							<IonIcon slot="start" icon={calculatorOutline}/>
+							Calculate
+						</IonButton>
+					</IonCol>
+					<IonCol className="ion-text-right">
+						<IonButton>
+							<IonIcon slot="start" icon={refreshOutline}/>
+							Reset
+						</IonButton>
+					</IonCol>
+				</IonRow>
+				<IonRow>
+					<IonCol>
+
+					</IonCol>
+				</IonRow>
+			</IonGrid>
+		</IonContent>
+	</IonApp>
 );
 
 export default App;
