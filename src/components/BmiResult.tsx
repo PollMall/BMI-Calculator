@@ -7,8 +7,8 @@ const BmiResult: React.FC<{ result: number }> = (props) => {
 		<IonRow>
 			<IonCol>
 				<IonCard>
-					<IonCardContent>
-						<h2>{props.result}</h2>
+					<IonCardContent className='ion-text-center'>
+						<h2>{props.result.toFixed(2)}</h2>
 					</IonCardContent>
 				</IonCard>
 			</IonCol>

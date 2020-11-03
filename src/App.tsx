@@ -1,12 +1,20 @@
 import React, { useRef, useState } from "react";
-import { Redirect, Route } from "react-router-dom";
-import { IonApp, IonHeader, IonContent, IonToolbar, IonTitle, IonRow, IonInput, IonGrid, IonCol, IonItem, IonLabel, IonButton, IonIcon, IonCard, IonCardContent } from "@ionic/react";
-import {calculatorOutline,refreshOutline} from "ionicons/icons"
-import { IonReactRouter } from "@ionic/react-router";
-import Home from "./pages/Home";
-import BmiControls from "./components/BmiControls"
-import BmiResult from "./components/BmiResult"
-
+import {
+	IonApp,
+	IonHeader,
+	IonContent,
+	IonToolbar,
+	IonTitle,
+	IonRow,
+	IonInput,
+	IonGrid,
+	IonCol,
+	IonItem,
+	IonLabel,
+	IonAlert,
+} from "@ionic/react";
+import BmiControls from "./components/BmiControls";
+import BmiResult from "./components/BmiResult";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -29,33 +37,41 @@ import "./theme/variables.css";
 
 const App: React.FC = () => {
 	const [calculatedBmi, setBmiValue] = useState<number>();
+	const [error, setError] = useState<string>();
 	const heightInputRef = useRef<HTMLIonInputElement>(null);
 	const weightInputRef = useRef<HTMLIonInputElement>(null);
+
+	const hideError = () => {
+		setError('');
+	};
 
 	const calculateBmI = () => {
 		const heightValue = heightInputRef.current!.value;
 		const weightValue = weightInputRef.current!.value;
 
-		if(!heightValue || !weightValue){
+		if (
+			!heightValue ||
+			!weightValue ||
+			+weightValue <= 0 ||
+			+heightValue <= 0
+		) {
 			setBmiValue(undefined);
+			setError('Please enter valid (positive) numbers.')
 			return;
 		}
 
 		const bmiValue = +weightValue / (+heightValue * +heightValue);
-		if(isNaN(bmiValue)){
-			alert("Height and weight must be numbers!");
-		} else {
-			setBmiValue(bmiValue);
-		}
+		setBmiValue(bmiValue);
 	};
 	const resetInputs = () => {
-		heightInputRef.current!.value = '';
-		weightInputRef.current!.value = '';
+		heightInputRef.current!.value = "";
+		weightInputRef.current!.value = "";
 		setBmiValue(undefined);
 	};
 
 	return (
 		<IonApp>
+			<IonAlert isOpen={!!error} message={error} buttons={[{text: 'Ok', handler: hideError}]} />
 			<IonHeader>
 				<IonToolbar color="primary">
 					<IonTitle>BMI Calculator</IonTitle>
